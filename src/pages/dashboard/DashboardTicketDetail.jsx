@@ -339,7 +339,9 @@ export default function DashboardTicketDetail() {
                     <p className="text-xs text-text-muted">{a.uploadedByName} · {formatDate(a.uploadedAt)}</p>
                   </div>
                   <div className="flex items-center gap-3">
-                    {a.fileAccessUrl && <a href={a.fileAccessUrl} target="_blank" rel="noopener noreferrer" className="text-xs text-primary-600 hover:underline">View</a>}
+                    {(a.fileAccessUrl || a.fileUrl) && (
+                      <a href={a.fileAccessUrl || a.fileUrl} target="_blank" rel="noopener noreferrer" className="text-xs text-primary-600 hover:underline">View</a>
+                    )}
                     <button
                       onClick={() => handleDeleteAttachment(a.id)}
                       disabled={deletingAttachmentId === a.id}
