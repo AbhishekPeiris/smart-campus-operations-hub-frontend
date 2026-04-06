@@ -1,9 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { register } from '../../api/auth';
-import { USER_ROLES } from '../../utils/constants';
 import Input from '../../components/common/Input';
-import Select from '../../components/common/Select';
 import Button from '../../components/common/Button';
 import { GraduationCap } from 'lucide-react';
 
@@ -45,7 +43,6 @@ export default function RegisterPage() {
             <Input label="University Email" type="email" required value={form.universityEmailAddress} onChange={set('universityEmailAddress')} placeholder="you@uni.com" />
             <Input label="Password" type="password" required value={form.password} onChange={set('password')} placeholder="Min 6 characters" />
             <Input label="Contact Number" value={form.contactNumber} onChange={set('contactNumber')} placeholder="+94771234567" />
-            <Select label="Role" options={USER_ROLES} value={form.role} onChange={set('role')} />
             <Button type="submit" className="w-full" disabled={loading}>{loading ? 'Creating...' : 'Register'}</Button>
           </form>
           <p className="mt-4 text-xs text-center text-text-muted">
