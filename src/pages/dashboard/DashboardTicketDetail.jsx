@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { getTicket, assignTechnician, updateTicketStatus, rejectTicket, resolveTicket } from '../../api/tickets';
 import { getCommentsByTicket, addComment, deleteComment } from '../../api/comments';
-import { getAttachmentsByTicket } from '../../api/attachments';
+import { getAttachmentsByTicket, uploadAttachment, deleteAttachment } from '../../api/attachments';
 import { getTechnicianUpdates } from '../../api/updates';
 import { getUsersByRole } from '../../api/users';
 import { getStatusBadge, getPriorityBadge, getCategoryLabel, formatDate } from '../../utils/constants';
@@ -12,7 +12,8 @@ import Badge from '../../components/common/Badge';
 import Button from '../../components/common/Button';
 import Modal from '../../components/common/Modal';
 import Spinner from '../../components/common/Spinner';
-import { ArrowLeft, MessageSquare, Paperclip, Clock, Send, Trash2, UserPlus, Play, XCircle, CheckCircle } from 'lucide-react';
+import Input from '../../components/common/Input';
+import { ArrowLeft, MessageSquare, Paperclip, Clock, Send, Trash2, UserPlus, Play, XCircle, CheckCircle, Upload } from 'lucide-react';
 
 export default function DashboardTicketDetail() {
   const { id } = useParams();
@@ -29,6 +30,10 @@ export default function DashboardTicketDetail() {
   const [newComment, setNewComment] = useState('');
   const [sending, setSending] = useState(false);
   const [tab, setTab] = useState('comments');
+  const [uploading, setUploading] = useState(false);
+  const [attachmentError, setAttachmentError] = useState('');
+  const [deletingAttachmentId, setDeletingAttachmentId] = useState('');
+  const [attachmentForm, setAttachmentForm] = useState({ fileName: '', fileType: '', fileUrl: '' });
 
   // Modals
   const [assignModal, setAssignModal] = useState(false);
@@ -55,7 +60,7 @@ export default function DashboardTicketDetail() {
       setComments(cRes.data.data || []);
       setAttachments(aRes.data.data || []);
       setUpdates(uRes.data.data || []);
-    } catch {} finally { setLoading(false); }
+    } catch { } finally { setLoading(false); }
   };
 
   useEffect(() => { load(); }, [id]);
@@ -68,7 +73,7 @@ export default function DashboardTicketDetail() {
       await assignTechnician(id, { technicianUserId: selectedTech, technicianName: tech?.fullName || '' });
       setAssignModal(false);
       load();
-    } catch {} finally { setActionLoading(false); }
+    } catch { } finally { setActionLoading(false); }
   };
 
   const handleStatusUpdate = async () => {
@@ -78,7 +83,7 @@ export default function DashboardTicketDetail() {
       setStatusModal(false);
       setStatusMsg('');
       load();
-    } catch {} finally { setActionLoading(false); }
+    } catch { } finally { setActionLoading(false); }
   };
 
   const handleReject = async () => {
@@ -88,7 +93,7 @@ export default function DashboardTicketDetail() {
       setRejectModal(false);
       setRejectReason('');
       load();
-    } catch {} finally { setActionLoading(false); }
+    } catch { } finally { setActionLoading(false); }
   };
 
   const handleResolve = async () => {
@@ -98,7 +103,7 @@ export default function DashboardTicketDetail() {
       setResolveModal(false);
       setResolutionNotes('');
       load();
-    } catch {} finally { setActionLoading(false); }
+    } catch { } finally { setActionLoading(false); }
   };
 
   const handleAddComment = async () => {
@@ -109,7 +114,14 @@ export default function DashboardTicketDetail() {
       setNewComment('');
       const cRes = await getCommentsByTicket(id);
       setComments(cRes.data.data || []);
-    } catch {} finally { setSending(false); }
+    } catch { } finally { setSending(false); }
+  };
+
+  const handleDeleteComment = async (commentId) => {
+    try {
+      await deleteComment(commentId);
+      setComments(prev => prev.filter(c => c.id !== commentId));
+    } catch { }
   };
 
   const openAssignModal = async () => {
@@ -118,6 +130,56 @@ export default function DashboardTicketDetail() {
       setTechnicians(res.data.data || []);
     } catch { setTechnicians([]); }
     setAssignModal(true);
+  };
+
+  const handleAttachmentFilePick = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setAttachmentForm(prev => ({
+      ...prev,
+      fileName: prev.fileName || file.name,
+      fileType: prev.fileType || file.type || 'application/octet-stream',
+    }));
+  };
+
+  const handleAddAttachment = async (e) => {
+    e.preventDefault();
+    setAttachmentError('');
+
+    if (!attachmentForm.fileName.trim() || !attachmentForm.fileUrl.trim()) {
+      setAttachmentError('Attachment name and URL are required.');
+      return;
+    }
+
+    setUploading(true);
+    try {
+      await uploadAttachment(
+        id,
+        attachmentForm.fileName.trim(),
+        (attachmentForm.fileType || 'application/octet-stream').trim(),
+        attachmentForm.fileUrl.trim(),
+        user.userId
+      );
+      const aRes = await getAttachmentsByTicket(id);
+      setAttachments(aRes.data.data || []);
+      setAttachmentForm({ fileName: '', fileType: '', fileUrl: '' });
+    } catch (err) {
+      setAttachmentError(err.response?.data?.message || 'Failed to add attachment');
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleDeleteAttachment = async (attachmentId) => {
+    setDeletingAttachmentId(attachmentId);
+    try {
+      await deleteAttachment(attachmentId);
+      setAttachments(prev => prev.filter(a => a.id !== attachmentId));
+    } catch {
+      setAttachmentError('Failed to delete attachment');
+    } finally {
+      setDeletingAttachmentId('');
+    }
   };
 
   if (loading) return <div className="flex justify-center py-20"><Spinner className="h-8 w-8" /></div>;
@@ -129,7 +191,7 @@ export default function DashboardTicketDetail() {
   const canManage = status !== 'CLOSED' && status !== 'REJECTED';
 
   return (
-    <div className="max-w-4xl mx-auto">
+    <div className="max-w-full mx-auto">
       <button onClick={() => navigate(-1)} className="flex items-center gap-1.5 text-sm text-text-muted hover:text-text-primary mb-4">
         <ArrowLeft size={16} /> Back
       </button>
@@ -210,7 +272,7 @@ export default function DashboardTicketDetail() {
                     <span className="text-xs text-text-muted">{formatDate(c.createdAt)}</span>
                   </div>
                   {c.commentOwnerUserId === user.userId && (
-                    <button onClick={async () => { await deleteComment(c.id); setComments(prev => prev.filter(x => x.id !== c.id)); }}
+                    <button onClick={() => handleDeleteComment(c.id)}
                       className="p-1 text-text-muted hover:text-danger"><Trash2 size={13} /></button>
                   )}
                 </div>
@@ -229,6 +291,45 @@ export default function DashboardTicketDetail() {
 
       {tab === 'attachments' && (
         <Card>
+          <form onSubmit={handleAddAttachment} className="p-4 border-b border-border space-y-3">
+            {attachmentError && <div className="p-2.5 bg-red-50 border border-red-200 rounded text-xs text-danger">{attachmentError}</div>}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <Input
+                label="File Name"
+                value={attachmentForm.fileName}
+                onChange={(e) => setAttachmentForm(prev => ({ ...prev, fileName: e.target.value }))}
+                placeholder="e.g. issue-photo.jpg"
+                required
+              />
+              <Input
+                label="File Type"
+                value={attachmentForm.fileType}
+                onChange={(e) => setAttachmentForm(prev => ({ ...prev, fileType: e.target.value }))}
+                placeholder="e.g. image/jpeg"
+              />
+              <div className="flex items-end">
+                <label className="w-full">
+                  <span className="block text-sm font-medium text-text-secondary mb-1">Pick File (optional)</span>
+                  <input type="file" onChange={handleAttachmentFilePick}
+                    className="w-full px-3 py-2 text-sm border border-border rounded-md bg-white" />
+                </label>
+              </div>
+            </div>
+            <div className="flex flex-col sm:flex-row gap-3 sm:items-end">
+              <Input
+                className="flex-1"
+                label="File URL"
+                value={attachmentForm.fileUrl}
+                onChange={(e) => setAttachmentForm(prev => ({ ...prev, fileUrl: e.target.value }))}
+                placeholder="https://..."
+                required
+              />
+              <Button type="submit" disabled={uploading}>
+                <Upload size={14} className="mr-1" />{uploading ? 'Adding...' : 'Add Attachment'}
+              </Button>
+            </div>
+          </form>
+
           {attachments.length === 0 ? <p className="p-6 text-center text-sm text-text-muted">No attachments</p> : (
             <div className="divide-y divide-border">
               {attachments.map(a => (
@@ -237,7 +338,16 @@ export default function DashboardTicketDetail() {
                     <p className="text-sm font-medium">{a.originalFileName || a.fileName}</p>
                     <p className="text-xs text-text-muted">{a.uploadedByName} · {formatDate(a.uploadedAt)}</p>
                   </div>
-                  {a.fileAccessUrl && <a href={a.fileAccessUrl} target="_blank" rel="noopener noreferrer" className="text-xs text-primary-600 hover:underline">View</a>}
+                  <div className="flex items-center gap-3">
+                    {a.fileAccessUrl && <a href={a.fileAccessUrl} target="_blank" rel="noopener noreferrer" className="text-xs text-primary-600 hover:underline">View</a>}
+                    <button
+                      onClick={() => handleDeleteAttachment(a.id)}
+                      disabled={deletingAttachmentId === a.id}
+                      className="p-1 text-text-muted hover:text-danger disabled:opacity-50"
+                    >
+                      <Trash2 size={13} />
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>

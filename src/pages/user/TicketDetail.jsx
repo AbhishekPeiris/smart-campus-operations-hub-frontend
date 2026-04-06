@@ -3,14 +3,15 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { getTicket } from '../../api/tickets';
 import { getCommentsByTicket, addComment, deleteComment } from '../../api/comments';
-import { getAttachmentsByTicket } from '../../api/attachments';
+import { getAttachmentsByTicket, uploadAttachment, deleteAttachment } from '../../api/attachments';
 import { getTechnicianUpdates } from '../../api/updates';
 import { getStatusBadge, getPriorityBadge, getCategoryLabel, formatDate } from '../../utils/constants';
 import Card from '../../components/common/Card';
 import Badge from '../../components/common/Badge';
 import Button from '../../components/common/Button';
 import Spinner from '../../components/common/Spinner';
-import { ArrowLeft, MessageSquare, Paperclip, Clock, Send, Trash2 } from 'lucide-react';
+import Input from '../../components/common/Input';
+import { ArrowLeft, MessageSquare, Paperclip, Clock, Send, Trash2, Upload } from 'lucide-react';
 
 export default function TicketDetail() {
   const { id } = useParams();
@@ -24,6 +25,10 @@ export default function TicketDetail() {
   const [newComment, setNewComment] = useState('');
   const [sending, setSending] = useState(false);
   const [tab, setTab] = useState('comments');
+  const [uploading, setUploading] = useState(false);
+  const [attachmentError, setAttachmentError] = useState('');
+  const [deletingAttachmentId, setDeletingAttachmentId] = useState('');
+  const [attachmentForm, setAttachmentForm] = useState({ fileName: '', fileType: '', fileUrl: '' });
 
   const load = async () => {
     try {
@@ -57,6 +62,56 @@ export default function TicketDetail() {
       await deleteComment(commentId);
       setComments(prev => prev.filter(c => c.id !== commentId));
     } catch { }
+  };
+
+  const handleAttachmentFilePick = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setAttachmentForm(prev => ({
+      ...prev,
+      fileName: prev.fileName || file.name,
+      fileType: prev.fileType || file.type || 'application/octet-stream',
+    }));
+  };
+
+  const handleAddAttachment = async (e) => {
+    e.preventDefault();
+    setAttachmentError('');
+
+    if (!attachmentForm.fileName.trim() || !attachmentForm.fileUrl.trim()) {
+      setAttachmentError('Attachment name and URL are required.');
+      return;
+    }
+
+    setUploading(true);
+    try {
+      await uploadAttachment(
+        id,
+        attachmentForm.fileName.trim(),
+        (attachmentForm.fileType || 'application/octet-stream').trim(),
+        attachmentForm.fileUrl.trim(),
+        user.userId
+      );
+      const aRes = await getAttachmentsByTicket(id);
+      setAttachments(aRes.data.data || []);
+      setAttachmentForm({ fileName: '', fileType: '', fileUrl: '' });
+    } catch (err) {
+      setAttachmentError(err.response?.data?.message || 'Failed to add attachment');
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleDeleteAttachment = async (attachmentId) => {
+    setDeletingAttachmentId(attachmentId);
+    try {
+      await deleteAttachment(attachmentId);
+      setAttachments(prev => prev.filter(a => a.id !== attachmentId));
+    } catch {
+      setAttachmentError('Failed to delete attachment');
+    } finally {
+      setDeletingAttachmentId('');
+    }
   };
 
   if (loading) return <div className="flex justify-center py-20"><Spinner className="h-8 w-8" /></div>;
@@ -140,6 +195,45 @@ export default function TicketDetail() {
 
       {tab === 'attachments' && (
         <Card>
+          <form onSubmit={handleAddAttachment} className="p-4 border-b border-border space-y-3">
+            {attachmentError && <div className="p-2.5 bg-red-50 border border-red-200 rounded text-xs text-danger">{attachmentError}</div>}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <Input
+                label="File Name"
+                value={attachmentForm.fileName}
+                onChange={(e) => setAttachmentForm(prev => ({ ...prev, fileName: e.target.value }))}
+                placeholder="e.g. issue-photo.jpg"
+                required
+              />
+              <Input
+                label="File Type"
+                value={attachmentForm.fileType}
+                onChange={(e) => setAttachmentForm(prev => ({ ...prev, fileType: e.target.value }))}
+                placeholder="e.g. image/jpeg"
+              />
+              <div className="flex items-end">
+                <label className="w-full">
+                  <span className="block text-sm font-medium text-text-secondary mb-1">Pick File (optional)</span>
+                  <input type="file" onChange={handleAttachmentFilePick}
+                    className="w-full px-3 py-2 text-sm border border-border rounded-md bg-white" />
+                </label>
+              </div>
+            </div>
+            <div className="flex flex-col sm:flex-row gap-3 sm:items-end">
+              <Input
+                className="flex-1"
+                label="File URL"
+                value={attachmentForm.fileUrl}
+                onChange={(e) => setAttachmentForm(prev => ({ ...prev, fileUrl: e.target.value }))}
+                placeholder="https://..."
+                required
+              />
+              <Button type="submit" disabled={uploading}>
+                <Upload size={14} className="mr-1" />{uploading ? 'Adding...' : 'Add Attachment'}
+              </Button>
+            </div>
+          </form>
+
           {attachments.length === 0 ? <p className="p-6 text-center text-sm text-text-muted">No attachments</p> : (
             <div className="divide-y divide-border">
               {attachments.map(a => (
@@ -148,7 +242,16 @@ export default function TicketDetail() {
                     <p className="text-sm font-medium">{a.originalFileName || a.fileName}</p>
                     <p className="text-xs text-text-muted">{a.uploadedByName} · {formatDate(a.uploadedAt)}</p>
                   </div>
-                  {a.fileAccessUrl && <a href={a.fileAccessUrl} target="_blank" rel="noopener noreferrer" className="text-xs text-primary-600 hover:underline">View</a>}
+                  <div className="flex items-center gap-3">
+                    {a.fileAccessUrl && <a href={a.fileAccessUrl} target="_blank" rel="noopener noreferrer" className="text-xs text-primary-600 hover:underline">View</a>}
+                    <button
+                      onClick={() => handleDeleteAttachment(a.id)}
+                      disabled={deletingAttachmentId === a.id}
+                      className="p-1 text-text-muted hover:text-danger disabled:opacity-50"
+                    >
+                      <Trash2 size={13} />
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>

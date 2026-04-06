@@ -14,6 +14,7 @@ export default function NewTicket() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [validationErrors, setValidationErrors] = useState([]);
   const [locationType, setLocationType] = useState('resource');
   const [form, setForm] = useState({
     incidentCategory: '', ticketTitle: '', description: '', priorityLevel: 'MEDIUM',
@@ -28,6 +29,7 @@ export default function NewTicket() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+    setValidationErrors([]);
     setLoading(true);
     try {
       const payload = { ...form };
@@ -42,7 +44,10 @@ export default function NewTicket() {
       await createTicket(user.userId, payload);
       navigate('/portal/tickets');
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to create ticket');
+      const serverData = err.response?.data;
+      const details = Array.isArray(serverData?.validationErrors) ? serverData.validationErrors : [];
+      setValidationErrors(details);
+      setError(serverData?.message || 'Failed to create ticket');
     } finally {
       setLoading(false);
     }
@@ -53,6 +58,13 @@ export default function NewTicket() {
       <h1 className="text-lg font-semibold mb-5">Report an Incident</h1>
       <Card className="p-6">
         {error && <div className="mb-4 p-2.5 bg-red-50 border border-red-200 rounded text-xs text-danger">{error}</div>}
+        {validationErrors.length > 0 && (
+          <div className="mb-4 p-2.5 bg-red-50 border border-red-200 rounded">
+            <ul className="list-disc pl-4 text-xs text-danger space-y-1">
+              {validationErrors.map((v, idx) => <li key={`${v}-${idx}`}>{v}</li>)}
+            </ul>
+          </div>
+        )}
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <Select label="Incident Category *" options={INCIDENT_CATEGORIES} value={form.incidentCategory} onChange={set('incidentCategory')} required />
@@ -66,11 +78,11 @@ export default function NewTicket() {
             <div className="flex gap-4">
               <label className="flex items-center gap-2 text-sm cursor-pointer">
                 <input type="radio" name="locType" checked={locationType === 'resource'} onChange={() => setLocationType('resource')} className="accent-primary-600" />
-                Resource-based
+                <span>Resource-based</span>
               </label>
               <label className="flex items-center gap-2 text-sm cursor-pointer">
                 <input type="radio" name="locType" checked={locationType === 'location'} onChange={() => setLocationType('location')} className="accent-primary-600" />
-                Location-based
+                <span>Location-based</span>
               </label>
             </div>
           </div>
