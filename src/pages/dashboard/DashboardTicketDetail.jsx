@@ -268,7 +268,7 @@ export default function DashboardTicketDetail() {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <span className="text-sm font-medium">{c.commentOwnerName}</span>
-                    <span className="text-[10px] px-1.5 py-0.5 rounded bg-surface-alt text-text-muted">{c.commentOwnerRole}</span>
+                    <span className="text-[10px] px-1.5 py-0.5 rounded bg-gray-100-alt text-text-muted">{c.commentOwnerRole}</span>
                     <span className="text-xs text-text-muted">{formatDate(c.createdAt)}</span>
                   </div>
                   {c.commentOwnerUserId === user.userId && (

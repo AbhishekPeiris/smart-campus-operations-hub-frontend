@@ -26,7 +26,7 @@ export default function DashboardLayout() {
   const isActive = (path) => location.pathname === path;
 
   return (
-    <div className="flex h-screen bg-surface overflow-hidden">
+    <div className="flex h-screen bg-gray-100 overflow-hidden">
       {/* Sidebar */}
       <aside className={`bg-white border-r border-border flex flex-col transition-all duration-200 ${collapsed ? 'w-16' : 'w-56'}`}>
         <div className="flex items-center gap-2.5 px-4 h-14 border-b border-border shrink-0">
@@ -38,7 +38,7 @@ export default function DashboardLayout() {
         <nav className="flex-1 py-2 px-2 space-y-0.5 overflow-y-auto">
           {nav.map(n => (
             <Link key={n.to} to={n.to}
-              className={`flex items-center gap-2.5 px-3 py-2 rounded-md text-sm font-medium transition-colors ${isActive(n.to) ? 'bg-primary-50 text-primary-700' : 'text-text-secondary hover:bg-surface-alt'}`}
+              className={`flex items-center gap-2.5 px-3 py-2 rounded-md text-sm font-medium transition-colors ${isActive(n.to) ? 'bg-primary-50 text-primary-700' : 'text-text-secondary hover:bg-gray-100-alt'}`}
               title={collapsed ? n.label : undefined}>
               <n.icon size={18} className="shrink-0" />
               {!collapsed && <span className="truncate">{n.label}</span>}
@@ -47,7 +47,7 @@ export default function DashboardLayout() {
         </nav>
         <div className="border-t border-border p-2 shrink-0">
           <button onClick={() => setCollapsed(!collapsed)}
-            className="w-full flex items-center justify-center p-2 rounded-md text-text-muted hover:bg-surface-alt">
+            className="w-full flex items-center justify-center p-2 rounded-md text-text-muted hover:bg-gray-100-alt">
             {collapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
           </button>
         </div>
@@ -61,7 +61,7 @@ export default function DashboardLayout() {
           <div className="flex items-center gap-3">
             <span className="text-xs text-text-muted">{user?.fullName}</span>
             <span className="px-2 py-0.5 text-[10px] font-semibold rounded bg-primary-100 text-primary-700">{user?.role}</span>
-            <button onClick={() => { logout(); navigate('/login'); }} className="p-1.5 rounded-md text-text-muted hover:bg-surface-alt" title="Logout">
+            <button onClick={() => { logout(); navigate('/login'); }} className="p-1.5 rounded-md text-text-muted hover:bg-gray-100-alt" title="Logout">
               <LogOut size={16} />
             </button>
           </div>

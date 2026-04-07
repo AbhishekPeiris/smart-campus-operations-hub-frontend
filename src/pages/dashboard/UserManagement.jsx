@@ -215,7 +215,7 @@ export default function UserManagement() {
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="bg-surface-alt text-xs text-text-muted">
+                  <tr className="bg-gray-100-alt text-xs text-text-muted">
                     <th className="text-left px-4 py-2 font-medium">Name</th>
                     <th className="text-left px-4 py-2 font-medium">Email</th>
                     <th className="text-left px-4 py-2 font-medium">Role</th>
@@ -228,7 +228,7 @@ export default function UserManagement() {
                   {filtered.map((u) => (
                     <tr
                       key={u.id}
-                      className="hover:bg-surface-alt/50 cursor-pointer"
+                      className="hover:bg-gray-100-alt/50 cursor-pointer"
                       onClick={() => openUserDetails(u)}
                     >
                       <td className="px-4 py-2.5 font-medium">{u.fullName}</td>

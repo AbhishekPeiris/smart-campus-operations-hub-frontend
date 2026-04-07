@@ -241,7 +241,7 @@
 <span class="cstat-no" title="statement not covered" >  const isActive = (path) =&gt; location.pathname === path;</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >  return (</span>
-<span class="cstat-no" title="statement not covered" >    &lt;div className="flex h-screen bg-surface overflow-hidden"&gt;</span>
+<span class="cstat-no" title="statement not covered" >    &lt;div className="flex h-screen bg-gray-100 overflow-hidden"&gt;</span>
       {/* Sidebar */}
 <span class="cstat-no" title="statement not covered" >      &lt;aside className={`bg-white border-r border-border flex flex-col transition-all duration-200 ${collapsed ? 'w-16' : 'w-56'}`}&gt;</span>
 <span class="cstat-no" title="statement not covered" >        &lt;div className="flex items-center gap-2.5 px-4 h-14 border-b border-border shrink-0"&gt;</span>
@@ -253,7 +253,7 @@
 <span class="cstat-no" title="statement not covered" >        &lt;nav className="flex-1 py-2 px-2 space-y-0.5 overflow-y-auto"&gt;</span>
 <span class="cstat-no" title="statement not covered" >          {nav.map(n =&gt; (</span>
 <span class="cstat-no" title="statement not covered" >            &lt;Link key={n.to} to={n.to}</span>
-<span class="cstat-no" title="statement not covered" >              className={`flex items-center gap-2.5 px-3 py-2 rounded-md text-sm font-medium transition-colors ${isActive(n.to) ? 'bg-primary-50 text-primary-700' : 'text-text-secondary hover:bg-surface-alt'}`}</span>
+<span class="cstat-no" title="statement not covered" >              className={`flex items-center gap-2.5 px-3 py-2 rounded-md text-sm font-medium transition-colors ${isActive(n.to) ? 'bg-primary-50 text-primary-700' : 'text-text-secondary hover:bg-gray-100-alt'}`}</span>
 <span class="cstat-no" title="statement not covered" >              title={collapsed ? n.label : undefined}&gt;</span>
 <span class="cstat-no" title="statement not covered" >              &lt;n.icon size={18} className="shrink-0" /&gt;</span>
 <span class="cstat-no" title="statement not covered" >              {!collapsed &amp;&amp; &lt;span className="truncate"&gt;{n.label}&lt;/span&gt;}</span>
@@ -262,7 +262,7 @@
 <span class="cstat-no" title="statement not covered" >        &lt;/nav&gt;</span>
 <span class="cstat-no" title="statement not covered" >        &lt;div className="border-t border-border p-2 shrink-0"&gt;</span>
 <span class="cstat-no" title="statement not covered" >          &lt;button onClick={() =&gt; setCollapsed(!collapsed)}</span>
-<span class="cstat-no" title="statement not covered" >            className="w-full flex items-center justify-center p-2 rounded-md text-text-muted hover:bg-surface-alt"&gt;</span>
+<span class="cstat-no" title="statement not covered" >            className="w-full flex items-center justify-center p-2 rounded-md text-text-muted hover:bg-gray-100-alt"&gt;</span>
 <span class="cstat-no" title="statement not covered" >            {collapsed ? &lt;ChevronRight size={16} /&gt; : &lt;ChevronLeft size={16} /&gt;}</span>
 <span class="cstat-no" title="statement not covered" >          &lt;/button&gt;</span>
 <span class="cstat-no" title="statement not covered" >        &lt;/div&gt;</span>
@@ -276,7 +276,7 @@
 <span class="cstat-no" title="statement not covered" >          &lt;div className="flex items-center gap-3"&gt;</span>
 <span class="cstat-no" title="statement not covered" >            &lt;span className="text-xs text-text-muted"&gt;{user?.fullName}&lt;/span&gt;</span>
 <span class="cstat-no" title="statement not covered" >            &lt;span className="px-2 py-0.5 text-[10px] font-semibold rounded bg-primary-100 text-primary-700"&gt;{user?.role}&lt;/span&gt;</span>
-<span class="cstat-no" title="statement not covered" >            &lt;button onClick={() =&gt; { logout(); navigate('/login'); }} className="p-1.5 rounded-md text-text-muted hover:bg-surface-alt" title="Logout"&gt;</span>
+<span class="cstat-no" title="statement not covered" >            &lt;button onClick={() =&gt; { logout(); navigate('/login'); }} className="p-1.5 rounded-md text-text-muted hover:bg-gray-100-alt" title="Logout"&gt;</span>
 <span class="cstat-no" title="statement not covered" >              &lt;LogOut size={16} /&gt;</span>
 <span class="cstat-no" title="statement not covered" >            &lt;/button&gt;</span>
 <span class="cstat-no" title="statement not covered" >          &lt;/div&gt;</span>

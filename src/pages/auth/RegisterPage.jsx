@@ -28,7 +28,7 @@ export default function RegisterPage() {
   const set = (k) => (e) => setForm({ ...form, [k]: e.target.value });
 
   return (
-    <div className="min-h-screen bg-surface flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
       <div className="w-full max-w-sm">
         <div className="text-center mb-8">
           <div className="w-12 h-12 bg-primary-600 rounded-xl flex items-center justify-center mx-auto mb-3">

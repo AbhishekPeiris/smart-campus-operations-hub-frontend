@@ -43,7 +43,7 @@ export default function MyTickets() {
         {filtered.length === 0 ? <EmptyState message="No tickets found" icon={FileText} /> : (
           <div className="divide-y divide-border">
             {filtered.map(t => (
-              <Link key={t.id} to={`/portal/tickets/${t.id}`} className="block px-4 py-3.5 hover:bg-surface-alt transition-colors">
+              <Link key={t.id} to={`/portal/tickets/${t.id}`} className="block px-4 py-3.5 hover:bg-gray-100-alt transition-colors">
                 <div className="flex items-start justify-between gap-4">
                   <div className="min-w-0 flex-1">
                     <p className="text-sm font-medium text-text-primary">{t.ticketTitle}</p>

@@ -69,7 +69,7 @@ export default function UserDashboard() {
         ) : (
           <div className="divide-y divide-border">
             {tickets.slice(0, 5).map(t => (
-              <Link key={t.id} to={`/portal/tickets/${t.id}`} className="flex items-center justify-between px-4 py-3 hover:bg-surface-alt transition-colors">
+              <Link key={t.id} to={`/portal/tickets/${t.id}`} className="flex items-center justify-between px-4 py-3 hover:bg-gray-100-alt transition-colors">
                 <div className="min-w-0">
                   <p className="text-sm font-medium text-text-primary truncate">{t.ticketTitle}</p>
                   <p className="text-xs text-text-muted mt-0.5">{t.ticketCode} · {formatDate(t.createdAt)}</p>

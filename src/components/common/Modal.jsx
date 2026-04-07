@@ -16,7 +16,7 @@ export default function Modal({ open, onClose, title, children, size = 'md' }) {
       <div className={`relative bg-white rounded-lg shadow-xl w-full ${sizes[size]} max-h-[90vh] overflow-y-auto`}>
         <div className="flex items-center justify-between p-4 border-b border-border">
           <h3 className="text-lg font-semibold text-text-primary">{title}</h3>
-          <button onClick={onClose} className="p-1 rounded hover:bg-surface-alt"><X size={18} /></button>
+          <button onClick={onClose} className="p-1 rounded hover:bg-gray-100-alt"><X size={18} /></button>
         </div>
         <div className="p-4">{children}</div>
       </div>

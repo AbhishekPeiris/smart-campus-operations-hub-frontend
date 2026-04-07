@@ -71,7 +71,7 @@ export default function DashboardOverview() {
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="bg-surface-alt text-xs text-text-muted">
+              <tr className="bg-gray-100-alt text-xs text-text-muted">
                 <th className="text-left px-4 py-2 font-medium">Code</th>
                 <th className="text-left px-4 py-2 font-medium">Title</th>
                 <th className="text-left px-4 py-2 font-medium">Priority</th>
@@ -82,7 +82,7 @@ export default function DashboardOverview() {
             </thead>
             <tbody className="divide-y divide-border">
               {recent.map(t => (
-                <tr key={t.id} className="hover:bg-surface-alt/50 cursor-pointer" onClick={() => window.location.href = `/dashboard/tickets/${t.id}`}>
+                <tr key={t.id} className="hover:bg-gray-100-alt/50 cursor-pointer" onClick={() => window.location.href = `/dashboard/tickets/${t.id}`}>
                   <td className="px-4 py-2.5 text-xs text-text-muted font-mono">{t.ticketCode}</td>
                   <td className="px-4 py-2.5 font-medium max-w-[200px] truncate">{t.ticketTitle}</td>
                   <td className="px-4 py-2.5"><Badge className={getPriorityBadge(t.priorityLevel).color}>{getPriorityBadge(t.priorityLevel).label}</Badge></td>

@@ -42,7 +42,7 @@ export default function MyAssignments() {
           <div className="divide-y divide-border">
             {filtered.map(t => (
               <div key={t.id} onClick={() => navigate(`/dashboard/tickets/${t.id}`)}
-                className="px-4 py-3.5 hover:bg-surface-alt cursor-pointer transition-colors">
+                className="px-4 py-3.5 hover:bg-gray-100-alt cursor-pointer transition-colors">
                 <div className="flex items-start justify-between gap-4">
                   <div>
                     <p className="text-sm font-medium">{t.ticketTitle}</p>

@@ -17,7 +17,7 @@ export default function UserLayout() {
   const isActive = (path) => location.pathname === path;
 
   return (
-    <div className="min-h-screen bg-surface">
+    <div className="min-h-screen bg-gray-100">
       {/* Top Bar */}
       <header className="bg-white border-b border-border sticky top-0 z-30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
@@ -31,7 +31,7 @@ export default function UserLayout() {
             <nav className="flex items-center gap-1">
               {nav.map(n => (
                 <Link key={n.to} to={n.to}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${isActive(n.to) ? 'bg-primary-50 text-primary-700' : 'text-text-secondary hover:bg-surface-alt'}`}>
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${isActive(n.to) ? 'bg-primary-50 text-primary-700' : 'text-text-secondary hover:bg-gray-100-alt'}`}>
                   <n.icon size={15} />
                   <span className="hidden md:inline">{n.label}</span>
                 </Link>
@@ -39,7 +39,7 @@ export default function UserLayout() {
             </nav>
             <div className="flex items-center gap-3">
               <span className="text-xs text-text-secondary hidden sm:block">{user?.fullName}</span>
-              <button onClick={() => { logout(); navigate('/login'); }} className="p-1.5 rounded-md text-text-muted hover:bg-surface-alt" title="Logout">
+              <button onClick={() => { logout(); navigate('/login'); }} className="p-1.5 rounded-md text-text-muted hover:bg-gray-100-alt" title="Logout">
                 <LogOut size={16} />
               </button>
             </div>

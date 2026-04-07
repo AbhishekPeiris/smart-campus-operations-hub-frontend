@@ -53,7 +53,7 @@ export default function AllTickets() {
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
-                    <tr className="bg-surface-alt text-xs text-text-muted">
+                    <tr className="bg-gray-100-alt text-xs text-text-muted">
                       <th className="text-left px-4 py-2 font-medium">Code</th>
                       <th className="text-left px-4 py-2 font-medium">Title</th>
                       <th className="text-left px-4 py-2 font-medium">Category</th>
@@ -66,7 +66,7 @@ export default function AllTickets() {
                   </thead>
                   <tbody className="divide-y divide-border">
                     {filtered.map(t => (
-                      <tr key={t.id} className="hover:bg-surface-alt/50 cursor-pointer" onClick={() => navigate(`/dashboard/tickets/${t.id}`)}>
+                      <tr key={t.id} className="hover:bg-gray-100-alt/50 cursor-pointer" onClick={() => navigate(`/dashboard/tickets/${t.id}`)}>
                         <td className="px-4 py-2.5 text-xs text-text-muted font-mono">{t.ticketCode}</td>
                         <td className="px-4 py-2.5 font-medium max-w-[180px] truncate">{t.ticketTitle}</td>
                         <td className="px-4 py-2.5 text-xs">{getCategoryLabel(t.incidentCategory)}</td>

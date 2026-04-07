@@ -336,7 +336,7 @@
 <span class="cstat-no" title="statement not covered" >        &lt;div className="overflow-x-auto"&gt;</span>
 <span class="cstat-no" title="statement not covered" >          &lt;table className="w-full text-sm"&gt;</span>
 <span class="cstat-no" title="statement not covered" >            &lt;thead&gt;</span>
-<span class="cstat-no" title="statement not covered" >              &lt;tr className="bg-surface-alt text-xs text-text-muted"&gt;</span>
+<span class="cstat-no" title="statement not covered" >              &lt;tr className="bg-gray-100-alt text-xs text-text-muted"&gt;</span>
 <span class="cstat-no" title="statement not covered" >                &lt;th className="text-left px-4 py-2 font-medium"&gt;Code&lt;/th&gt;</span>
 <span class="cstat-no" title="statement not covered" >                &lt;th className="text-left px-4 py-2 font-medium"&gt;Title&lt;/th&gt;</span>
 <span class="cstat-no" title="statement not covered" >                &lt;th className="text-left px-4 py-2 font-medium"&gt;Priority&lt;/th&gt;</span>
@@ -347,7 +347,7 @@
 <span class="cstat-no" title="statement not covered" >            &lt;/thead&gt;</span>
 <span class="cstat-no" title="statement not covered" >            &lt;tbody className="divide-y divide-border"&gt;</span>
 <span class="cstat-no" title="statement not covered" >              {recent.map(t =&gt; (</span>
-<span class="cstat-no" title="statement not covered" >                &lt;tr key={t.id} className="hover:bg-surface-alt/50 cursor-pointer" onClick={() =&gt; window.location.href = `/dashboard/tickets/${t.id}`}&gt;</span>
+<span class="cstat-no" title="statement not covered" >                &lt;tr key={t.id} className="hover:bg-gray-100-alt/50 cursor-pointer" onClick={() =&gt; window.location.href = `/dashboard/tickets/${t.id}`}&gt;</span>
 <span class="cstat-no" title="statement not covered" >                  &lt;td className="px-4 py-2.5 text-xs text-text-muted font-mono"&gt;{t.ticketCode}&lt;/td&gt;</span>
 <span class="cstat-no" title="statement not covered" >                  &lt;td className="px-4 py-2.5 font-medium max-w-[200px] truncate"&gt;{t.ticketTitle}&lt;/td&gt;</span>
 <span class="cstat-no" title="statement not covered" >                  &lt;td className="px-4 py-2.5"&gt;&lt;Badge className={getPriorityBadge(t.priorityLevel).color}&gt;{getPriorityBadge(t.priorityLevel).label}&lt;/Badge&gt;&lt;/td&gt;</span>

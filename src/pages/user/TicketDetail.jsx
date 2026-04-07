@@ -281,7 +281,7 @@ export default function TicketDetail() {
                     <span className="text-sm font-medium">
                       {c.commentOwnerName}
                     </span>
-                    <span className="text-[10px] px-1.5 py-0.5 rounded bg-surface-alt text-text-muted">
+                    <span className="text-[10px] px-1.5 py-0.5 rounded bg-gray-100-alt text-text-muted">
                       {c.commentOwnerRole}
                     </span>
                     <span className="text-xs text-text-muted">
